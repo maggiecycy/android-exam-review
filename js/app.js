@@ -10,6 +10,8 @@
   const metaEl = document.getElementById("chapter-meta");
   const knowledgeEl = document.getElementById("panel-knowledge");
   const quizEl = document.getElementById("panel-quiz");
+  const tabsEl = document.querySelector(".tabs");
+  const mainEl = document.querySelector(".main");
 
   function currentChapter() {
     return chapters.find((c) => c.id === currentId);
@@ -281,15 +283,40 @@
     quizEl.classList.toggle("is-active", tab === "quiz");
   }
 
+  function renderLab(ch) {
+    tabsEl.hidden = true;
+    quizEl.hidden = true;
+    quizEl.classList.remove("is-active");
+    knowledgeEl.hidden = false;
+    knowledgeEl.classList.add("is-active");
+    mainEl.classList.add("is-lab");
+    if (window.AndroidLab && typeof window.AndroidLab.mount === "function") {
+      window.AndroidLab.mount(knowledgeEl);
+    } else {
+      knowledgeEl.innerHTML = `<div class="empty-state">可视化演练脚本未加载。</div>`;
+    }
+  }
+
   function renderAll() {
     const ch = currentChapter();
     renderNav();
     titleEl.textContent = `${ch.no}　${ch.title}`;
     metaEl.textContent = ch.examWeight || "";
+    scoreVisible = false;
+
+    if (ch.mode === "lab") {
+      renderLab(ch);
+      return;
+    }
+
+    tabsEl.hidden = false;
+    mainEl.classList.remove("is-lab");
+    if (window.AndroidLab && typeof window.AndroidLab.unmount === "function") {
+      window.AndroidLab.unmount();
+    }
     renderKnowledge(ch);
     renderQuiz(ch);
     showTab(activeTab);
-    scoreVisible = false;
   }
 
   navEl.addEventListener("click", (e) => {

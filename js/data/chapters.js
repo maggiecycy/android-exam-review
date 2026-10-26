@@ -4,5 +4,7 @@ window.CHAPTERS = [
   window.CHAPTER_03,
   window.CHAPTER_04,
   window.CHAPTER_05,
+  window.CHAPTER_ESSENTIALS,
+  window.CHAPTER_LAB,
   window.CHAPTER_MOCK
 ];
